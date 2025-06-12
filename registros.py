@@ -87,7 +87,41 @@ class AplicacionTienda(tk.Tk):
         self.tab_meta = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_meta, text="Estado de la Meta")
         self.crear_tab_meta(self.tab_meta)
+        
+        self.tab_ficha = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_ficha, text="Ficha del Indicador")
+        self.crear_ficha_indicador(self.tab_ficha)
 
+    def crear_ficha_indicador(self, parent):
+        opciones_padding = {'padx': 8, 'pady': 8}
+        ttk.Label(parent, text="Código del Indicador").grid(row=0, column=0, sticky='w', **opciones_padding)
+        self.entry_cod = ttk.Entry(parent, width=30)
+        self.entry_cod.grid(row=0, column=1, **opciones_padding)
+        
+        ttk.Label(parent, text="Resultado Planificado").grid(row=0, column=0, sticky='w', **opciones_padding)
+        self.entry_cod = ttk.Entry(parent, width=30)
+        self.entry_cod.grid(row=0, column=1, **opciones_padding)
+        
+        ttk.Label(parent, text="Indicador").grid(row=0, column=0, sticky='w', **opciones_padding)
+        self.entry_cod = ttk.Entry(parent, width=30)
+        self.entry_cod.grid(row=0, column=1, **opciones_padding)
+        
+        ttk.Label(parent, text="Forma de cálculo").grid(row=0, column=0, sticky='w', **opciones_padding)
+        self.entry_cod = ttk.Entry(parent, width=30)
+        self.entry_cod.grid(row=0, column=1, **opciones_padding)
+        
+        ttk.Label(parent, text="Fuente de Información").grid(row=0, column=0, sticky='w', **opciones_padding)
+        self.entry_cod = ttk.Entry(parent, width=30)
+        self.entry_cod.grid(row=0, column=1, **opciones_padding)
+        
+        #Gráfico
+        ttk.Label(parent, text="Seguimiento y Presentación").grid(row=0, column=0, sticky='w', **opciones_padding)
+        self.entry_cod = ttk.Entry(parent, width=30)
+        self.entry_cod.grid(row=0, column=1, **opciones_padding)
+        
+        
+
+        
     def crear_tab_agregar(self, parent):
         opciones_padding = {'padx': 8, 'pady': 8}
 
