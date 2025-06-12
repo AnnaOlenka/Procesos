@@ -228,7 +228,7 @@ class AplicacionTienda(tk.Tk):
                 estado = f"¡Felicidades! Meta de {self.tienda.meta_ventas} unidades vendidas alcanzada."
             else:
                 faltan = self.tienda.meta_ventas - total
-                estado = f"Meta no alcanzada. Faltan {faltan} unidades por vender."
+                estado = f"Meta no alcanzada. Faltan {faltan} ventas."
         else:
             estado = "No se ha establecido una meta de ventas."
 
