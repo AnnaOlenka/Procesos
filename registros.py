@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox, simpledialog
 from typing import Dict
 
 class Producto:
-    def _init_(self, nombre: str, precio: float, cantidad: int) -> None:
+    def __init__(self, nombre: str, precio: float, cantidad: int) -> None:
         self.nombre = nombre
         self.precio = precio
         self.stock = cantidad
@@ -18,7 +18,7 @@ class Producto:
             return False
 
 class Tienda:
-    def _init_(self, meta_ventas: int = 0) -> None:
+    def __init__(self, meta_ventas: int = 0) -> None:
         self.productos: Dict[str, Producto] = {}
         self.meta_ventas = meta_ventas
 
@@ -44,8 +44,8 @@ class Tienda:
         return self.total_vendidos() >= self.meta_ventas
 
 class AplicacionTienda(tk.Tk):
-    def _init_(self):
-        super()._init_()
+    def __init__(self):
+        super().__init__()
         self.title("Gestión Simple de Tienda")
         self.geometry("700x500")
         self.resizable(False, False)
@@ -212,6 +212,6 @@ class AplicacionTienda(tk.Tk):
         resumen = f"Total de Productos Vendidos: {total}\n{estado}"
         self.label_resumen.config(text=resumen)
 
-if __name__ == "_main_":
+if __name__ == "__main__":
     app = AplicacionTienda()
     app.mainloop()
