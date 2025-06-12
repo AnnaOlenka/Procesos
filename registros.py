@@ -136,12 +136,12 @@ class AplicacionTienda(tk.Tk):
     def crear_tab_vender(self, parent):
         opciones_padding = {'padx': 8, 'pady': 8}
 
-        ttk.Label(parent, text="Selecciona Producto a Vender:").grid(row=0, column=0, sticky='w', columnspan=2, **opciones_padding)
+        ttk.Label(parent, text="Selecciona Producto a Vender:").grid(row=0, column=0, columnspan=2, sticky='w', **opciones_padding)
 
-        self.tree_vender = ttk.Treeview(parent, columns=("Precio", "Stock", "Vendidos"), show="headings", height=6)
+        self.tree_vender = ttk.Treeview(parent, columns=("Nombre", "Precio", "Stock"), show="headings", height=6)
         self.tree_vender.grid(row=1, column=0, columnspan=2, **opciones_padding)
 
-        for col in ("Precio", "Stock", "Vendidos"):
+        for col in ("Nombre", "Precio", "Stock"):
             self.tree_vender.heading(col, text=col)
             self.tree_vender.column(col, anchor='center', width=100)
 
@@ -160,7 +160,7 @@ class AplicacionTienda(tk.Tk):
         selected = self.tree_vender.selection()
         if selected:
             item = self.tree_vender.item(selected[0])
-            self.var_producto_vender.set(item['text'])
+            self.var_producto_vender.set(item['values'][0])
 
     def manejar_vender_producto(self):
         nombre = self.var_producto_vender.get()
@@ -194,7 +194,7 @@ class AplicacionTienda(tk.Tk):
             self.tree_vender.delete(item)
 
         for nombre, p in self.tienda.productos.items():
-            self.tree_vender.insert('', 'end', text=nombre, values=(f"${p.precio:.2f}", p.stock, p.vendidos))
+            self.tree_vender.insert('', 'end', values=(nombre, f"${p.precio:.2f}", p.stock))
 
     def actualizar_opciones_vender(self):
         self.actualizar_tabla_vender()
@@ -203,7 +203,7 @@ class AplicacionTienda(tk.Tk):
         marco = ttk.Frame(parent)
         marco.pack(expand=True, fill='both', padx=10, pady=10)
 
-        columnas = ("Precio", "Stock", "Vendidos")
+        columnas = ("Nombre", "Precio", "Stock", "Vendidos")
         self.tree = ttk.Treeview(marco, columns=columnas, show='headings', height=15)
         for col in columnas:
             self.tree.heading(col, text=col)
@@ -219,8 +219,8 @@ class AplicacionTienda(tk.Tk):
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        for p in self.tienda.productos.values():
-            self.tree.insert('', 'end', values=(f"${p.precio:.2f}", p.stock, p.vendidos))
+        for nombre, p in self.tienda.productos.items():
+            self.tree.insert('', 'end', values=(nombre, f"${p.precio:.2f}", p.stock, p.vendidos))
 
         total = self.tienda.total_vendidos()
         if self.tienda.meta_ventas > 0:
@@ -228,7 +228,7 @@ class AplicacionTienda(tk.Tk):
                 estado = f"¡Felicidades! Meta de {self.tienda.meta_ventas} unidades vendidas alcanzada."
             else:
                 faltan = self.tienda.meta_ventas - total
-                estado = f"Meta no alcanzada. Faltan {faltan} ventas."
+                estado = f"Meta no alcanzada. Faltan {faltan} unidades por vender."
         else:
             estado = "No se ha establecido una meta de ventas."
 
@@ -248,12 +248,20 @@ class AplicacionTienda(tk.Tk):
         )
         self.label_estado_meta.pack(expand=True)
 
-        btn_actualizar = ttk.Button(marco, text="Actualizar Estado", command=self.actualizar_estado_meta)
+        btn_actualizar = ttk.Button(marco, text="Actualizar", command=self.actualizar_estado_meta)
         btn_actualizar.pack(pady=20)
 
         self.actualizar_estado_meta()
 
     def actualizar_estado_meta(self):
+        nueva_meta = simpledialog.askstring("Actualizar Meta", "Ingresa una nueva meta de ventas:", parent=self)
+        if nueva_meta is not None:
+            if nueva_meta.isdigit():
+                self.tienda.meta_ventas = int(nueva_meta)
+            else:
+                messagebox.showerror("Error", "La meta debe ser un número entero válido.")
+                return
+
         total = self.tienda.total_vendidos()
         meta = self.tienda.meta_ventas
 
@@ -270,6 +278,7 @@ class AplicacionTienda(tk.Tk):
             color = 'blue'
 
         self.label_estado_meta.config(text=texto, foreground=color)
+        self.actualizar_tab_ver()
 
 if __name__ == "__main__":
     app = AplicacionTienda()
