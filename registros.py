@@ -47,7 +47,7 @@ class AplicacionTienda(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Gestión Simple de Tienda")
-        self.geometry("700x500")
+        self.geometry("750x600")
         self.resizable(False, False)
 
         self.tienda = None
@@ -237,36 +237,55 @@ class AplicacionTienda(tk.Tk):
         marco = ttk.Frame(parent)
         marco.pack(expand=True, fill='both', padx=10, pady=10)
 
-        columnas = ("Nombre", "Precio", "Stock", "Vendidos")
-        self.tree = ttk.Treeview(marco, columns=columnas, show='headings', height=15)
-        for col in columnas:
-            self.tree.heading(col, text=col)
-            self.tree.column(col, anchor='center', width=100)
-        self.tree.pack(side='top', fill='both', expand=True)
+        # Tabla de productos
+        ttk.Label(marco, text="Productos Disponibles:", font=("Arial", 10, "bold")).pack(anchor='w')
+        columnas_productos = ("Nombre", "Precio", "Stock")
+        self.tree_productos = ttk.Treeview(marco, columns=columnas_productos, show='headings', height=6)
+        for col in columnas_productos:
+            self.tree_productos.heading(col, text=col)
+            self.tree_productos.column(col, anchor='center', width=100)
+        self.tree_productos.pack(fill='x', pady=5)
+
+        # Tabla de ventas
+        ttk.Label(marco, text="Resumen de Ventas:", font=("Arial", 10, "bold")).pack(anchor='w', pady=(10, 0))
+        columnas_ventas = ("Nombre", "Vendidos")
+        self.tree_ventas = ttk.Treeview(marco, columns=columnas_ventas, show='headings', height=6)
+        for col in columnas_ventas:
+            self.tree_ventas.heading(col, text=col)
+            self.tree_ventas.column(col, anchor='center', width=150)
+        self.tree_ventas.pack(fill='x')
 
         self.label_resumen = ttk.Label(marco, text="", anchor='center', font=('Arial', 12, 'bold'))
-        self.label_resumen.pack(side='bottom', pady=10)
+        self.label_resumen.pack(pady=10)
 
         self.actualizar_tab_ver()
 
     def actualizar_tab_ver(self):
-        for item in self.tree.get_children():
-            self.tree.delete(item)
-
+        # Actualizar productos
+        for item in self.tree_productos.get_children():
+            self.tree_productos.delete(item)
         for nombre, p in self.tienda.productos.items():
-            self.tree.insert('', 'end', values=(nombre, f"${p.precio:.2f}", p.stock, p.vendidos))
+            self.tree_productos.insert('', 'end', values=(nombre, f"${p.precio:.2f}", p.stock))
 
+        # Actualizar ventas
+        for item in self.tree_ventas.get_children():
+            self.tree_ventas.delete(item)
+        for nombre, p in self.tienda.productos.items():
+            if p.vendidos > 0:
+                self.tree_ventas.insert('', 'end', values=(nombre, p.vendidos))
+
+        # Actualizar resumen
         total = self.tienda.total_vendidos()
-        if self.tienda.meta_ventas > 0:
+        meta = self.tienda.meta_ventas
+        if meta > 0:
             if self.tienda.meta_alcanzada():
-                estado = f"¡Felicidades! Meta de {self.tienda.meta_ventas} unidades vendidas alcanzada."
+                estado = f"¡Felicidades! Meta de {meta} unidades vendidas alcanzada."
             else:
-                faltan = self.tienda.meta_ventas - total
-                estado = f"Meta no alcanzada. Faltan {faltan} unidades por vender."
+                estado = f"Meta no alcanzada. Faltan {meta - total} unidades."
         else:
             estado = "No se ha establecido una meta de ventas."
 
-        resumen = f"Meta de Ventas: {self.tienda.meta_ventas} unidades\nTotal de Productos Vendidos: {total}\n{estado}"
+        resumen = f"Meta de Ventas: {meta} unidades\nTotal de Productos Vendidos: {total}\n{estado}"
         self.label_resumen.config(text=resumen)
 
     def crear_tab_meta(self, parent):
@@ -282,20 +301,21 @@ class AplicacionTienda(tk.Tk):
         )
         self.label_estado_meta.pack(expand=True)
 
-        btn_actualizar = ttk.Button(marco, text="Actualizar", command=self.actualizar_estado_meta)
+        btn_actualizar = ttk.Button(marco, text="Actualizar Meta", command=self.pedir_nueva_meta)
         btn_actualizar.pack(pady=20)
 
         self.actualizar_estado_meta()
 
-    def actualizar_estado_meta(self):
+    def pedir_nueva_meta(self):
         nueva_meta = simpledialog.askstring("Actualizar Meta", "Ingresa una nueva meta de ventas:", parent=self)
         if nueva_meta is not None:
             if nueva_meta.isdigit():
                 self.tienda.meta_ventas = int(nueva_meta)
+                self.actualizar_estado_meta()
             else:
                 messagebox.showerror("Error", "La meta debe ser un número entero válido.")
-                return
 
+    def actualizar_estado_meta(self):
         total = self.tienda.total_vendidos()
         meta = self.tienda.meta_ventas
 
