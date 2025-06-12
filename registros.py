@@ -51,6 +51,8 @@ class AplicacionTienda(tk.Tk):
         self.resizable(False, False)
 
         self.tienda = None
+        self.var_producto_vender = tk.StringVar()
+
         self.meta_ventas = self.pedir_meta_ventas()
         self.tienda = Tienda(self.meta_ventas)
 
@@ -81,6 +83,10 @@ class AplicacionTienda(tk.Tk):
         self.tab_ver = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_ver, text="Ver Productos y Ventas")
         self.crear_tab_ver(self.tab_ver)
+
+        self.tab_meta = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_meta, text="Estado de la Meta")
+        self.crear_tab_meta(self.tab_meta)
 
     def crear_tab_agregar(self, parent):
         opciones_padding = {'padx': 8, 'pady': 8}
@@ -125,31 +131,36 @@ class AplicacionTienda(tk.Tk):
         self.entry_cantidad.delete(0, tk.END)
         self.actualizar_opciones_vender()
         self.actualizar_tab_ver()
+        self.actualizar_estado_meta()
 
     def crear_tab_vender(self, parent):
         opciones_padding = {'padx': 8, 'pady': 8}
 
-        ttk.Label(parent, text="Selecciona Producto a Vender:").grid(row=0, column=0, sticky='w', **opciones_padding)
+        ttk.Label(parent, text="Selecciona Producto a Vender:").grid(row=0, column=0, sticky='w', columnspan=2, **opciones_padding)
 
-        self.var_producto_vender = tk.StringVar()
-        self.combo_productos = ttk.Combobox(parent, textvariable=self.var_producto_vender, state='readonly')
-        self.combo_productos.grid(row=0, column=1, **opciones_padding)
-        self.actualizar_opciones_vender()
+        self.tree_vender = ttk.Treeview(parent, columns=("Precio", "Stock", "Vendidos"), show="headings", height=6)
+        self.tree_vender.grid(row=1, column=0, columnspan=2, **opciones_padding)
 
-        ttk.Label(parent, text="Cantidad a Vender:").grid(row=1, column=0, sticky='w', **opciones_padding)
+        for col in ("Precio", "Stock", "Vendidos"):
+            self.tree_vender.heading(col, text=col)
+            self.tree_vender.column(col, anchor='center', width=100)
+
+        self.tree_vender.bind("<<TreeviewSelect>>", self.on_select_producto_vender)
+
+        ttk.Label(parent, text="Cantidad a Vender:").grid(row=2, column=0, sticky='w', **opciones_padding)
         self.entry_cantidad_vender = ttk.Entry(parent, width=30)
-        self.entry_cantidad_vender.grid(row=1, column=1, **opciones_padding)
+        self.entry_cantidad_vender.grid(row=2, column=1, **opciones_padding)
 
         btn_vender = ttk.Button(parent, text="Vender Producto", command=self.manejar_vender_producto)
-        btn_vender.grid(row=2, column=0, columnspan=2, pady=15)
+        btn_vender.grid(row=3, column=0, columnspan=2, pady=15)
 
-    def actualizar_opciones_vender(self):
-        nombres = list(self.tienda.productos.keys())
-        self.combo_productos['values'] = nombres
-        if nombres:
-            self.combo_productos.current(0)
-        else:
-            self.combo_productos.set('')
+        self.actualizar_tabla_vender()
+
+    def on_select_producto_vender(self, event):
+        selected = self.tree_vender.selection()
+        if selected:
+            item = self.tree_vender.item(selected[0])
+            self.var_producto_vender.set(item['text'])
 
     def manejar_vender_producto(self):
         nombre = self.var_producto_vender.get()
@@ -172,9 +183,21 @@ class AplicacionTienda(tk.Tk):
             messagebox.showinfo("Éxito", f"Se vendieron {cantidad} unidad(es) de '{nombre}'.")
             self.entry_cantidad_vender.delete(0, tk.END)
             self.actualizar_tab_ver()
+            self.actualizar_tabla_vender()
+            self.actualizar_estado_meta()
         else:
             stock = self.tienda.productos[nombre].stock if nombre in self.tienda.productos else 0
             messagebox.showerror("Error de Stock", f"Stock insuficiente para '{nombre}'. Stock actual: {stock}")
+
+    def actualizar_tabla_vender(self):
+        for item in self.tree_vender.get_children():
+            self.tree_vender.delete(item)
+
+        for nombre, p in self.tienda.productos.items():
+            self.tree_vender.insert('', 'end', text=nombre, values=(f"${p.precio:.2f}", p.stock, p.vendidos))
+
+    def actualizar_opciones_vender(self):
+        self.actualizar_tabla_vender()
 
     def crear_tab_ver(self, parent):
         marco = ttk.Frame(parent)
@@ -209,8 +232,44 @@ class AplicacionTienda(tk.Tk):
         else:
             estado = "No se ha establecido una meta de ventas."
 
-        resumen = f"Total de Productos Vendidos: {total}\n{estado}"
+        resumen = f"Meta de Ventas: {self.tienda.meta_ventas} unidades\nTotal de Productos Vendidos: {total}\n{estado}"
         self.label_resumen.config(text=resumen)
+
+    def crear_tab_meta(self, parent):
+        marco = ttk.Frame(parent)
+        marco.pack(expand=True, fill='both', padx=10, pady=10)
+
+        self.label_estado_meta = ttk.Label(
+            marco,
+            text="",
+            anchor='center',
+            font=('Arial', 16, 'bold'),
+            foreground='blue'
+        )
+        self.label_estado_meta.pack(expand=True)
+
+        btn_actualizar = ttk.Button(marco, text="Actualizar Estado", command=self.actualizar_estado_meta)
+        btn_actualizar.pack(pady=20)
+
+        self.actualizar_estado_meta()
+
+    def actualizar_estado_meta(self):
+        total = self.tienda.total_vendidos()
+        meta = self.tienda.meta_ventas
+
+        if meta > 0:
+            if self.tienda.meta_alcanzada():
+                texto = f"🎉 ¡Meta alcanzada! Se han vendido {total} unidades."
+                color = 'green'
+            else:
+                faltan = meta - total
+                texto = f"⏳ Meta no alcanzada. Faltan {faltan} unidades para cumplir la meta."
+                color = 'red'
+        else:
+            texto = "ℹ️ No se ha establecido una meta de ventas."
+            color = 'blue'
+
+        self.label_estado_meta.config(text=texto, foreground=color)
 
 if __name__ == "__main__":
     app = AplicacionTienda()
