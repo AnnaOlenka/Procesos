@@ -62,6 +62,8 @@ menuItems.forEach((item, index) => {
     seccionRegistro.style.display = "none";
     seccionVentas.style.display = "none";
     seccionMetas.style.display = "none";
+    seccionMeta.style.display = "none";
+    seccionEstadoMeta.style.display = "none";
 
     if (index === 0) { // Productos
       tabsHeader.style.display = "flex";
@@ -79,7 +81,19 @@ menuItems.forEach((item, index) => {
     } else if (index === 1) { // Ventas
       seccionVentas.style.display = "block";
     } else if (index === 2) { // Metas
-      seccionMetas.style.display = "block";
+      seccionMetas.style.display = "block"; 
+
+      if (metaTabActivo === "metas") {
+        tabMetas.classList.add("activo");
+        tabEstadoMeta.classList.remove("activo");
+        seccionMeta.style.display = "block";
+        seccionEstadoMeta.style.display = "none"; 
+      } else {
+        tabEstadoMeta.classList.add("activo");
+        tabMetas.classList.remove("activo");
+        seccionEstadoMeta.style.display = "block";
+        seccionMeta.style.display = "none"; 
+      }
     }
   });
 });
@@ -89,11 +103,22 @@ const tabMetas = document.getElementById("tab-meta");
 const tabEstadoMeta = document.getElementById("tab-estado-meta");
 const seccionMeta = document.getElementById("seccion-meta");
 const seccionEstadoMeta = document.getElementById("seccion-estado-meta")
+let metaTabActivo = "metas";
 
 tabMetas.addEventListener("click", ()=>{
   tabMetas.classList.add("activo");
   tabEstadoMeta.classList.remove("activo");
   seccionMeta.style.display = "block";
   seccionEstadoMeta.style.display = "none";
+  metaTabActivo = "metas";
+})
+
+tabEstadoMeta.addEventListener("click",()=>{
+  tabEstadoMeta.classList.add("activo");
+  tabMetas.classList.remove("activo");
+  seccionMeta.style.display = "none";
+  seccionEstadoMeta.style.display = "block";
+  metaTabActivo = "EstadoMetas";
 
 })
+
