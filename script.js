@@ -1,4 +1,4 @@
-// Cambiar entre pestañas
+// Cambiar entre pestañas de la seccion de PRODUCTOS
 const tabInventario = document.getElementById("tab-inventario");
 const tabRegistro = document.getElementById("tab-registro");
 const seccionInventario = document.getElementById("seccion-inventario");
@@ -83,3 +83,17 @@ menuItems.forEach((item, index) => {
     }
   });
 });
+
+// Cambiar entre pestañas de la seccion de METAS
+const tabMetas = document.getElementById("tab-meta");
+const tabEstadoMeta = document.getElementById("tab-estado-meta");
+const seccionMeta = document.getElementById("seccion-meta");
+const seccionEstadoMeta = document.getElementById("seccion-estado-meta")
+
+tabMetas.addEventListener("click", ()=>{
+  tabMetas.classList.add("activo");
+  tabEstadoMeta.classList.remove("activo");
+  seccionMeta.style.display = "block";
+  seccionEstadoMeta.style.display = "none";
+
+})
