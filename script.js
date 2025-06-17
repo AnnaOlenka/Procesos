@@ -4,11 +4,14 @@ const tabRegistro = document.getElementById("tab-registro");
 const seccionInventario = document.getElementById("seccion-inventario");
 const seccionRegistro = document.getElementById("seccion-registro");
 
+let productoTabActivo = "inventario"; // <- se guarda qué pestaña está activa
+
 tabInventario.addEventListener("click", () => {
   tabInventario.classList.add("activo");
   tabRegistro.classList.remove("activo");
   seccionInventario.style.display = "block";
   seccionRegistro.style.display = "none";
+  productoTabActivo = "inventario";
 });
 
 tabRegistro.addEventListener("click", () => {
@@ -16,6 +19,7 @@ tabRegistro.addEventListener("click", () => {
   tabInventario.classList.remove("activo");
   seccionInventario.style.display = "none";
   seccionRegistro.style.display = "block";
+  productoTabActivo = "registro";
 });
 
 // Añadir producto a la tabla
@@ -50,22 +54,31 @@ form.addEventListener("submit", function(event) {
 // Cambiar panel por opción del menú lateral
 const menuItems = document.querySelectorAll(".sidebar nav ul li");
 const tabsHeader = document.getElementById("tabs-productos");
-const seccionProductos = document.getElementById("seccion-inventario");
 const seccionVentas = document.getElementById("seccion-ventas");
 const seccionMetas = document.getElementById("seccion-metas");
 
 menuItems.forEach((item, index) => {
   item.addEventListener("click", () => {
-    // Resetear visibilidad
+    // Ocultar todas las secciones
     tabsHeader.style.display = "none";
-    seccionProductos.style.display = "none";
+    seccionInventario.style.display = "none";
     seccionRegistro.style.display = "none";
     seccionVentas.style.display = "none";
     seccionMetas.style.display = "none";
 
     if (index === 0) { // Productos
       tabsHeader.style.display = "flex";
-      seccionProductos.style.display = "block";
+
+      if (productoTabActivo === "inventario") {
+        tabInventario.classList.add("activo");
+        tabRegistro.classList.remove("activo");
+        seccionInventario.style.display = "block";
+      } else {
+        tabRegistro.classList.add("activo");
+        tabInventario.classList.remove("activo");
+        seccionRegistro.style.display = "block";
+      }
+
     } else if (index === 1) { // Ventas
       seccionVentas.style.display = "block";
     } else if (index === 2) { // Metas
