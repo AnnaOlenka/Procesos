@@ -76,9 +76,13 @@
                 <input type="number" id="ingresos" required>
 
                 <label>Define el periodo</label>
-                <input type="text" id="periodo" required>
+                  <select id="periodo" required>
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="semanal">Semanal</option>
+                    <option value="dias">Por días</option>
+                  </select>
 
-                <button type="submit" id="btn-anadir">Agregar meta</button>
+                <button type="submit" id="btn-meta">Agregar meta</button>
               </form>
             </section>
             

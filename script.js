@@ -122,3 +122,18 @@ tabEstadoMeta.addEventListener("click",()=>{
 
 })
 
+//Agregar Meta
+const formMeta = document.getElementById("formulario-meta");
+
+formMeta.addEventListener("submit", function(event) {
+  event.preventDefault(); 
+
+  const ingresos = document.getElementById("ingresos").value;
+  const periodo = document.getElementById("periodo").value;
+
+  console.log("Meta registrada:");
+  console.log("Ingresos:", ingresos);
+  console.log("Periodo:", periodo);
+  
+  formMeta.reset();
+});
