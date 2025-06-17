@@ -65,9 +65,23 @@
         <!-- Sección METAS -->
         <section class="metas" id="seccion-metas" style="display: none;">
             <header class="tabs" id="tabs-productos">
-              <div class="tab activo" id="tab-meta">Definir meta</div>
-              <div class="tab" id="tab-estado-meta">Estado de la meta</div>
+                <div class="tab activo" id="tab-meta">Definir meta</div>
+                <div class="tab" id="tab-estado-meta">Estado de la meta</div>
             </header>
+
+            <section class="formulario" id="seccion-meta" style="display: none;">
+              <h2>Definir la meta de automoviles</h2>
+              <form id="formulario-meta">
+                <label>Cantidad de Ingresos</label>
+                <input type="number" id="ingresos" required>
+
+                <label>Define el periodo</label>
+                <input type="text" id="periodo" required>
+
+                <button type="submit" id="btn-anadir">Agregar meta</button>
+              </form>
+            </section>
+
         </section>
     </main>
   </div>
