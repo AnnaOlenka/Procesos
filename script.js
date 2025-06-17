@@ -30,16 +30,13 @@ form.addEventListener("submit", function(event) {
   event.preventDefault();
 
   const nombre = document.getElementById("nombre").value;
-  const cantidad = document.getElementById("cantidad").value;
-  const medida = document.getElementById("medida").value;
+  const stock = document.getElementById("stock").value;
   const precio = document.getElementById("precio").value;
-
   const fila = document.createElement("tr");
 
   fila.innerHTML = `
     <td>${nombre}</td>
-    <td>${cantidad}</td>
-    <td>${medida}</td>
+    <td>${stock}</td>
     <td>S/ ${parseFloat(precio).toFixed(2)}</td>
   `;
 
