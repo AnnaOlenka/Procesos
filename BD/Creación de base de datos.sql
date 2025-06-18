@@ -66,7 +66,7 @@ IF OBJECT_ID('Meta') IS NULL
 CREATE TABLE Meta (
     id_meta INT IDENTITY(1,1) PRIMARY KEY,
     fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-    descripcion NVARCHAR(255) NOT NULL,
+    descripcion NVARCHAR(255),
     periodo NVARCHAR(50), -- Por ejemplo: 'Mensual', 'Trimestral', etc.
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
