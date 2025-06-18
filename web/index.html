@@ -163,11 +163,26 @@
             <input type="number" id="ingresos" required>
 
             <label>Define el periodo</label>
-            <select id="periodo" required>
-              <option value="" disabled selected>Selecciona una opción</option>
-              <option value="semanal">Semanal</option>
-              <option value="dias">Por días</option>
-            </select>
+              <select id="periodo" required>
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="semanal">Semanal</option>
+                <option value="dias">Por días</option>
+              </select>
+
+              <!-- Fecha si elige "Por días" -->
+              <div id="campo-fecha-dia" style="display: none;">
+                <label>Fecha</label>
+                <input type="date" id="fecha-dia">
+              </div>
+
+              <!-- Rango de fechas si elige "Semanal" -->
+              <div id="campo-fechas-semanal" style="display: none;">
+                <label>Fecha Inicio</label>
+                <input type="date" id="fecha-inicio">
+                <br><br>
+                <label>Fecha Fin</label>
+                <input type="date" id="fecha-fin">
+              </div>
 
             <button type="submit" id="btn-meta">Agregar meta</button>
           </form>
