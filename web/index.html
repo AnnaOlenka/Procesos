@@ -77,7 +77,7 @@
                   <th>Precio</th>
                 </tr>
               </thead>
-              <tbody id="tabla-productos">
+              <tbody id="tabla-productos_">
 
               </tbody>
             </table>
@@ -85,7 +85,7 @@
           <hr>
           <section class="formulario">
             <h2>Agregar Venta</h2>
-            <form class="formulario-venta">
+            <form class="formulario-venta_" id="formulario-venta">
               <table>
                 <thead>
                   <tr>
@@ -97,19 +97,19 @@
                 </thead>
                 <tbody id="tabla-venta">
                   <tr>
-                    <td><input type="text" name="nombre[]" id="nombre_venta" value="Ingrese"></td>
-                    <td><input type="number" name="Cantidad[]" id="cantidad_venta" value="12" required></td>
-                    <td><input type="number" name="Precio_Uni[]" id="precio_venta" value="43"></td>
-                    <td><input type="number" name="Precio_Total[]" id="precio_total_venta" value="43"></td>
+                    <!-- <td><input type="text" name="nombre[]" id="nombre_venta"></td>
+                    <td><input type="number" name="Cantidad[]" id="cantidad_venta"></td>
+                    <td><input type="number" name="Precio_Uni[]" id="precio_venta"></td>
+                    <td><input type="number" name="Precio_Total[]" id="precio_total_venta"></td> -->
                   </tr>
                 </tbody>
               </table>
 
-              <div>
-                <button type="submit" id="btn-venta">Agregar Venta</button>
-                <button type="button" class="btn-cancel" id="btn-cancel-venta">Cancelar Venta</button>
-              </div>
-            </form>
+                <div>
+                  <button type="submit" id="btn-venta">Agregar Venta</button>
+                  <button type="button" class="btn-cancel" id="btn-cancel-venta">Cancelar Venta</button>
+                </div>
+              </form>
 
           </section>
 

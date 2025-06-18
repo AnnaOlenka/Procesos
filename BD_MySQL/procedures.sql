@@ -51,13 +51,13 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE RegistrarVenta (
-    IN id_vendedor INT,
-    IN total DECIMAL(10,2),
+    IN p_id_vendedor INT,
+    IN p_total DECIMAL(10,2),
     OUT nueva_venta_id INT
 )
 BEGIN
     INSERT INTO Venta (id_vendedor, total)
-    VALUES (id_vendedor, total);
+    VALUES (p_id_vendedor, p_total);
 
     SET nueva_venta_id = LAST_INSERT_ID();
 END $$
@@ -67,24 +67,24 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE AgregarDetalleVenta (
-    IN id_venta INT,
-    IN id_producto INT,
-    IN cantidad INT
+    IN p_id_venta INT,
+    IN p_id_producto INT,
+    IN p_cantidad INT
 )
 BEGIN
     DECLARE precio_unitario DECIMAL(10,2);
 
     SELECT precio INTO precio_unitario
     FROM Producto
-    WHERE id_producto = id_producto;
+    WHERE id_producto = p_id_producto;
 
     INSERT INTO DetalleVenta (id_venta, id_producto, cantidad, precio_unitario)
-    VALUES (id_venta, id_producto, cantidad, precio_unitario);
+    VALUES (p_id_venta, p_id_producto, p_cantidad, precio_unitario);
 
     -- Actualizar stock
     UPDATE Producto
-    SET stock = stock - cantidad
-    WHERE id_producto = id_producto;
+    SET stock = stock - p_cantidad
+    WHERE id_producto = p_id_producto;
 END $$
 
 DELIMITER ;

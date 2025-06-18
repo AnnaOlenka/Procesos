@@ -11,6 +11,8 @@ tabInventario.addEventListener("click", () => {
   seccionInventario.style.display = "block";
   seccionRegistro.style.display = "none";
   productoTabActivo = "inventario";
+
+  cargarProductos();
 });
 
 tabRegistro.addEventListener("click", () => {
@@ -24,6 +26,7 @@ tabRegistro.addEventListener("click", () => {
 // ----------- PRODUCTOS: Agregar producto -----------
 const form = document.getElementById("formulario-producto");
 const tabla = document.getElementById("tabla-productos");
+const tabla_Secundaria = document.getElementById("tabla-productos_");
 
 form.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -32,6 +35,18 @@ form.addEventListener("submit", function (event) {
   const stock = document.getElementById("stock").value;
   const precio = document.getElementById("precio").value;
 
+  const datos = new FormData();
+  datos.append("nombre", nombre);
+  datos.append("precio", precio);
+  datos.append("stock", stock);
+
+  fetch("backend/agregar_producto.php", {
+    method: "POST",
+    body: datos,
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
   const fila = document.createElement("tr");
   fila.innerHTML = `
     <td>${nombre}</td>
@@ -43,7 +58,55 @@ form.addEventListener("submit", function (event) {
   form.reset();
 
   tabInventario.click(); // Cambia automáticamente a inventario
+}})
 });
+
+//----------------------Mostrar Productos----------------------
+function cargarProductos() {
+  fetch("backend/obtener_productos.php")
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
+        tabla.innerHTML = ""; // limpiar la tabla antes de mostrar
+        res.data.forEach(producto => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `
+            <td>${producto.nombre}</td>
+            <td>${producto.stock}</td>
+            <td>S/ ${parseFloat(producto.precio).toFixed(2)}</td>
+          `;
+          tabla.appendChild(fila);
+        });
+      } 
+    })
+}
+
+//----------------------Mostrar Productos----------------------
+function cargarProductos_() {
+  fetch("backend/obtener_productos.php")
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
+        tabla_Secundaria.innerHTML = ""; // limpiar la tabla antes de mostrar
+        res.data.forEach(producto => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `
+            <td>${producto.nombre}</td>
+            <td>${producto.stock}</td>
+            <td>S/ ${parseFloat(producto.precio).toFixed(2)}</td>
+          `;
+          fila.addEventListener("dblclick", () => {
+            agregarProductoAVenta(producto);
+          });
+
+          tabla_Secundaria.appendChild(fila);
+        });
+      } 
+    })
+}
+
+
+
 
 // ----------- VENTAS: Cambio de pestañas -----------
 const tabVentas = document.getElementById("tab-venta");
@@ -58,6 +121,7 @@ tabVentas.addEventListener("click", () => {
   seccionVenta.style.display = "block";
   seccionBoletas.style.display = "none";
   ventaTabActivo = "ventas";
+  cargarProductos_();
 });
 
 tabVisualizarVenta.addEventListener("click", () => {
@@ -67,6 +131,74 @@ tabVisualizarVenta.addEventListener("click", () => {
   seccionBoletas.style.display = "block";
   ventaTabActivo = "boletas";
 });
+
+function agregarProductoAVenta(producto) {
+  const tablaVenta = document.getElementById("tabla-venta");
+
+  const fila = document.createElement("tr");
+  fila.setAttribute("data-id", producto.id_producto); // <-- aquí
+
+  fila.innerHTML = `
+    <td><input type="text" name="nombre[]" value="${producto.nombre}" readonly></td>
+    <td><input type="number" name="Cantidad[]" value="1" min="1" onchange="actualizarPrecioTotal(this)"></td>
+    <td><input type="number" name="Precio_Uni[]" value="${parseFloat(producto.precio).toFixed(2)}" step="0.01" readonly></td>
+    <td><input type="number" name="Precio_Total[]" value="${parseFloat(producto.precio).toFixed(2)}" step="0.01" readonly></td>
+  `;
+
+  tablaVenta.appendChild(fila);
+}
+
+
+function actualizarPrecioTotal(inputCantidad) {
+  const fila = inputCantidad.closest("tr");
+  const precioUnitario = parseFloat(fila.querySelector('input[name="Precio_Uni[]"]').value);
+  const cantidad = parseInt(inputCantidad.value) || 0;
+  const precioTotal = fila.querySelector('input[name="Precio_Total[]"]');
+  precioTotal.value = (cantidad * precioUnitario).toFixed(2);
+}
+
+document.getElementById("formulario-venta").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const filas = document.querySelectorAll("#tabla-venta tr");
+  const productos = [];
+
+  filas.forEach(fila => {
+  const inputNombre = fila.querySelector('input[name="nombre[]"]');
+  const inputCantidad = fila.querySelector('input[name="Cantidad[]"]');
+  const inputPrecio = fila.querySelector('input[name="Precio_Uni[]"]');
+
+  if (inputNombre && inputCantidad && inputPrecio) {
+    const nombre = inputNombre.value;
+    const cantidad = parseInt(inputCantidad.value);
+    const precio = parseFloat(inputPrecio.value);
+    const id_producto = fila.getAttribute("data-id");
+
+    productos.push({ id_producto, nombre, cantidad, precio });
+  }
+});
+
+
+  const datos = new FormData();
+  datos.append("id_vendedor", 1); // <- puedes hacer esto dinámico
+  datos.append("productos", JSON.stringify(productos));
+
+  fetch("backend/registrar_venta.php", {
+    method: "POST",
+    body: datos
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
+        alert("Venta registrada con éxito.");
+        document.getElementById("tabla-venta").innerHTML = "";
+      } else {
+        alert("Error: " + res.mensaje);
+      }
+    });
+});
+
+
 
 // ----------- METAS: Cambio de pestañas -----------
 const tabMetas = document.getElementById("tab-meta");
@@ -194,3 +326,7 @@ formMeta.addEventListener("submit", function (event) {
   campoFechaDia.style.display = "none";
   campoFechasSemanal.style.display = "none";
 });
+
+
+window.addEventListener("DOMContentLoaded", cargarProductos);
+window.addEventListener("DOMContentLoaded", cargarProductos_);
