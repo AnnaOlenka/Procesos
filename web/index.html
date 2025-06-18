@@ -66,7 +66,7 @@
           <div class="tab" id="tab-visualizar-venta">Visualizar Ventas</div>
         </header>
 
-        <section class="ventas"  id="seccion-venta">
+        <section class="ventas"  id="seccion-venta" style="display: none">
           <section class="productos" id="seccion-inventario">
             <h2>Automoviles</h2>
             <table>
@@ -83,9 +83,9 @@
             </table>
           </section>
           <hr>
-          <section class="formulario" id="seccion-venta">
+          <section class="formulario">
             <h2>Agregar Venta</h2>
-            <form class="formulario-venta" id="seccion-venta">
+            <form class="formulario-venta">
               <table>
                 <thead>
                   <tr>
@@ -114,7 +114,7 @@
           </section>
 
         </section>
-        <section class="ventas" id="seccion-boletas">
+        <section class="ventas" id="seccion-boletas" style="display: none">
           <div class="venta-boleta">
             <header>
               <div class="head-boleta">
@@ -174,7 +174,38 @@
         </section>
 
         <section class="estado-metas" id="seccion-estado-meta" style="display: none;">
+          <section id="estado-metas-diarias">
+            <h2>Metas Diarias</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Meta de Ingresos</th>
+                  <th>Ingresos Actuales</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-metas-diarias">
 
+              </tbody>
+            </table>
+          </section>
+          <section  id="estado-metas-semanales">
+            <h2>Metas Semanales</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha Inicio</th>
+                  <th>Fecha Fin</th>
+                  <th>Meta de Ingresos</th>
+                  <th>Ingresos Actuales</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-metas-semanales">
+
+              </tbody>
+          </section>
         </section>
 
       </section>

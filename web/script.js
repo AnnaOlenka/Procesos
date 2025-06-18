@@ -48,6 +48,76 @@ form.addEventListener("submit", function(event) {
 });
 
 
+// Cambiar entre pestañas de la seccion de VENTAS
+const tabVentas = document.getElementById("tab-venta");
+const tabVisualizarVenta = document.getElementById("tab-visualizar-venta");
+const seccionVenta = document.getElementById("seccion-venta");
+const seccionBoletas = document.getElementById("seccion-boletas")
+let ventaTabActivo = "ventas";
+
+tabVentas.addEventListener("click", ()=>{
+  tabVentas.classList.add("activo");
+  tabVisualizarVenta.classList.remove("activo");
+  seccionVenta.style.display = "block";
+  seccionBoletas.style.display = "none";
+  ventaTabActivo = "ventas";
+})
+
+tabVisualizarVenta.addEventListener("click", ()=>{
+  tabVisualizarVenta.classList.add("activo");
+  tabVentas.classList.remove("activo");
+  seccionVenta.style.display = "none";
+  seccionBoletas.style.display = "block";
+  ventaTabActivo = "boletas";
+})
+
+// Cambiar entre pestañas de la seccion de METAS
+const tabMetas = document.getElementById("tab-meta");
+const tabEstadoMeta = document.getElementById("tab-estado-meta");
+const seccionMeta = document.getElementById("seccion-meta");
+const seccionEstadoMeta = document.getElementById("seccion-estado-meta")
+let metaTabActivo = "metas";
+
+tabMetas.addEventListener("click", ()=>{
+  tabMetas.classList.add("activo");
+  tabEstadoMeta.classList.remove("activo");
+  seccionMeta.style.display = "block";
+  seccionEstadoMeta.style.display = "none";
+  metaTabActivo = "metas";
+})
+
+tabEstadoMeta.addEventListener("click",()=>{
+  tabEstadoMeta.classList.add("activo");
+  tabMetas.classList.remove("activo");
+  seccionMeta.style.display = "none";
+  seccionEstadoMeta.style.display = "block";
+  metaTabActivo = "EstadoMetas";
+
+})
+
+//Agregar Meta
+const formMeta = document.getElementById("formulario-meta");
+
+formMeta.addEventListener("submit", function(event) {
+  event.preventDefault(); 
+
+  const ingresos = document.getElementById("ingresos").value;
+  const periodo = document.getElementById("periodo").value;
+
+  console.log("Meta registrada:");
+  console.log("Ingresos:", ingresos);
+  console.log("Periodo:", periodo);
+  
+  formMeta.reset();
+});
+
+
+
+
+
+
+
+
 // Cambiar panel por opción del menú lateral
 const menuItems = document.querySelectorAll(".sidebar nav ul li");
 const tabsHeader = document.getElementById("tabs-productos");
@@ -107,68 +177,4 @@ menuItems.forEach((item, index) => {
       }
     }
   });
-});
-
-
-// Cambiar entre pestañas de la seccion de VENTAS
-const tabVentas = document.getElementById("tab-venta");
-const tabVisualizarVenta = document.getElementById("tab-visualizar-venta");
-const seccionVenta = document.getElementById("seccion-venta");
-const seccionBoletas = document.getElementById("seccion-boletas")
-let ventaTabActivo = "ventas";
-
-tabVentas.addEventListener("click", ()=>{
-  tabVentas.classList.add("activo");
-  tabVisualizarVenta.classList.remove("activo");
-  seccionVenta.style.display = "block";
-  seccionBoletas.style.display = "none";
-  ventaTabActivo = "ventas";
-})
-
-tabVisualizarVenta.addEventListener("click", ()=>{
-  tabVentas.classList.add("activo");
-  tabVisualizarVenta.classList.remove("activo");
-  seccionVenta.style.display = "none";
-  seccionBoletas.style.display = "block";
-  ventaTabActivo = "boletas";
-})
-
-// Cambiar entre pestañas de la seccion de METAS
-const tabMetas = document.getElementById("tab-meta");
-const tabEstadoMeta = document.getElementById("tab-estado-meta");
-const seccionMeta = document.getElementById("seccion-meta");
-const seccionEstadoMeta = document.getElementById("seccion-estado-meta")
-let metaTabActivo = "metas";
-
-tabMetas.addEventListener("click", ()=>{
-  tabMetas.classList.add("activo");
-  tabEstadoMeta.classList.remove("activo");
-  seccionMeta.style.display = "block";
-  seccionEstadoMeta.style.display = "none";
-  metaTabActivo = "metas";
-})
-
-tabEstadoMeta.addEventListener("click",()=>{
-  tabEstadoMeta.classList.add("activo");
-  tabMetas.classList.remove("activo");
-  seccionMeta.style.display = "none";
-  seccionEstadoMeta.style.display = "block";
-  metaTabActivo = "EstadoMetas";
-
-})
-
-//Agregar Meta
-const formMeta = document.getElementById("formulario-meta");
-
-formMeta.addEventListener("submit", function(event) {
-  event.preventDefault(); 
-
-  const ingresos = document.getElementById("ingresos").value;
-  const periodo = document.getElementById("periodo").value;
-
-  console.log("Meta registrada:");
-  console.log("Ingresos:", ingresos);
-  console.log("Periodo:", periodo);
-  
-  formMeta.reset();
 });
