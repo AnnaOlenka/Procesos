@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>App Procesos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="contenedor">
+    <aside class="sidebar">
+      <div class="logo">Automoviles</div>
+      <nav>
+        <ul>
+          <li><img src="icons/productos.png" alt="Productos" class="icono">Productos</li>
+          <li><img src="icons/ventas.png" alt="Ventas" class="icono"> Ventas</li>
+          <li><img src="icons/metas.png" alt="Metas" class="icono"> Metas</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="contenido">
+      <header class="tabs" id="tabs-productos">
+        <div class="tab activo" id="tab-inventario">Ver inventario</div>
+        <div class="tab" id="tab-registro">Registrar un nuevo automovil</div>
+      </header>
+
+      <!-- Sección PRODUCTOS -->
+      <section class="productos" id="seccion-inventario">
+        <h2>Automoviles</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Stock</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-productos">
+
+          </tbody>
+        </table>
+      </section>
+
+      <section class="formulario" id="seccion-registro" style="display: none;">
+        <h2>Datos del Automovil</h2>
+        <form id="formulario-producto">
+          <label>Nombre</label>
+          <input type="text" id="nombre" required>
+
+          <label>Stock</label>
+          <input type="number" id="stock" required>
+
+          <label>Precio</label>
+          <input type="number" id="precio" required step="0.01">
+
+          <button type="submit" id="btn-anadir">Añadir producto</button>
+        </form>
+      </section>
+
+      <!-- Sección VENTAS -->
+      <section class="ventas" id="seccion-ventas" style="display: none;">
+        <header class="tabs" id="tabs-ventas">
+          <div class="tab activo" id="tab-venta">Realizar Venta</div>
+          <div class="tab" id="tab-visualizar-venta">Visualizar Ventas</div>
+        </header>
+
+        <section class="ventas"  id="seccion-venta">
+          <section class="productos" id="seccion-inventario">
+            <h2>Automoviles</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Stock</th>
+                  <th>Precio</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-productos">
+
+              </tbody>
+            </table>
+          </section>
+          <hr>
+          <section class="formulario" id="seccion-venta">
+            <h2>Agregar Venta</h2>
+            <form class="formulario-venta" id="seccion-venta">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio Uni.</th>
+                    <th>Precio Total</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-venta">
+                  <tr>
+                    <td><input type="text" name="nombre[]" id="nombre_venta" value="Ingrese"></td>
+                    <td><input type="number" name="Cantidad[]" id="cantidad_venta" value="12" required></td>
+                    <td><input type="number" name="Precio_Uni[]" id="precio_venta" value="43"></td>
+                    <td><input type="number" name="Precio_Total[]" id="precio_total_venta" value="43"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div>
+                <button type="submit" id="btn-venta">Agregar Venta</button>
+                <button type="button" class="btn-cancel" id="btn-cancel-venta">Cancelar Venta</button>
+              </div>
+            </form>
+
+          </section>
+
+        </section>
+        <section class="ventas" id="seccion-boletas">
+          <div class="venta-boleta">
+            <header>
+              <div class="head-boleta">
+                <div id="id-venta-boleta">B1</div>
+                <div id="name-venta-boleta">Venta N°1</div>
+              </div>
+              <div>
+                <label>Fecha</label>
+              </div>
+            </header>
+            <hr>
+            <div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Uni</th>
+                    <th>Precio Total</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <hr>
+            <div>
+              <label>Monto de Compra</label>
+              <label>S/. 25</label>
+            </div>
+          </div>
+          
+        </section>
+
+      </section>
+
+      <!-- Sección METAS -->
+      <section class="metas" id="seccion-metas" style="display: none;">
+        <header class="tabs" id="tabs-metas">
+          <div class="tab activo" id="tab-meta">Definir meta</div>
+          <div class="tab" id="tab-estado-meta">Estado de la meta</div>
+        </header>
+
+        <section class="formulario" id="seccion-meta" style="display: none;">
+          <h2>Definir la meta de automoviles</h2>
+          <form id="formulario-meta">
+            <label>Cantidad de Ingresos</label>
+            <input type="number" id="ingresos" required>
+
+            <label>Define el periodo</label>
+            <select id="periodo" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="semanal">Semanal</option>
+              <option value="dias">Por días</option>
+            </select>
+
+            <button type="submit" id="btn-meta">Agregar meta</button>
+          </form>
+        </section>
+
+        <section class="estado-metas" id="seccion-estado-meta" style="display: none;">
+
+        </section>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

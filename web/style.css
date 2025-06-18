@@ -1,0 +1,191 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+}
+
+.contenedor {
+  display: flex;
+}
+
+/* SIDEBAR completo */
+.sidebar {
+  width: 260px;
+  background-color: #f5f5f5; /* gris claro */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezado "Minimarket" */
+.logo {
+  background-color: #00ffe0; /* verde celeste */
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* Lista de navegación */
+.sidebar nav ul {
+  list-style: none;
+}
+
+.sidebar nav ul li {
+  margin-bottom: 25px;
+  font-weight: bold;
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar nav ul li:hover {
+  background-color: #c8c8c8;
+  color: white;
+}
+
+
+.icono {
+  width: 24px;
+  height: 24px;
+}
+
+.contenido {
+  flex: 1;
+  background-color: white;
+  padding: 30px;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.tab.activo {
+  border-bottom: 3px solid #3366ff;
+  color: black;
+  font-weight: bold;
+}
+
+.productos h2,
+.formulario h2 {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100;
+  border-collapse: collapse;
+  overflow: auto;
+}
+
+thead th {
+  background-color: #ffd08a;
+  padding: 10px;
+  text-align: center;
+}
+
+tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #90ee90;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+button:hover {
+  background-color: #7ed87e;
+}
+
+
+
+/*========================VENTAS====================*/
+.ventas{
+  display: flex;
+  height: 100vh;
+}
+
+.ventas table input{
+  width: 100%;
+}
+
+hr{
+  margin: 10px;
+}
+
+.ventas div{
+  align-self: center;
+}
+
+.btn-cancel{
+  background-color: #db5b61;
+}
+.btn-cancel:hover{
+  background-color: #c25459;
+}
+
+.venta-boleta{
+  background-color: #f8f8f8;
+  border-radius: 27px;
+  max-height: 450px;
+  max-width: 300px;
+  padding: 15px;
+}
+
+.head-boleta{
+  display: flex;
+  align-items: center;
+  
+  font-weight: bold;
+}
+.head-boleta #id-venta-boleta{
+  background-color: #098C6E;
+  border-radius: 17px;
+  width: 50px;
+  height: 40px;
+  margin-right: 15px;
+
+  color: rgb(255, 255, 255);
+  text-align: center;
+  align-content: center;
+}
