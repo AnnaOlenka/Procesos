@@ -191,3 +191,8 @@ hr{
   text-align: center;
   align-content: center;
 }
+
+#tabla-productos td {
+  text-align: center;
+  vertical-align: middle;
+}
