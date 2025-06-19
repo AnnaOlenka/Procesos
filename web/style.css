@@ -154,11 +154,11 @@ button:hover {
 
 
 /*========================VENTAS====================*/
-.ventas{
-  display: flex;
-  min-height: 100vh;
+.ventas {
+  flex-direction: column; /* importante si tienes un solo panel vertical */
+  padding: 20px;
+  overflow-x: auto; /* por si algo se desborda horizontalmente */
 }
-
 
 .ventas table input{
   width: 100%;
@@ -179,14 +179,26 @@ hr{
   background-color: #c25459;
 }
 
-.venta-boleta{
+.venta-boleta {
   background-color: #f8f8f8;
-  border-radius: 27px;
-  max-height: 450px;
-  max-width: 300px;
-  padding: 15px;
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 820px; /* controla el ancho de la boleta */
+  box-sizing: border-box;
+  flex: 1 1 400px;
 }
 
+.venta-boleta table {
+  width: 100%;
+  table-layout: auto;
+}
+
+.venta-boleta th, .venta-boleta td {
+  padding: 6px;
+  text-align: left;
+  word-break: break-word;
+}
 .head-boleta{
   display: flex;
   align-items: center;
@@ -217,4 +229,15 @@ hr{
 .estado-pendiente{
   color: #db5b61;
   font-weight: bold;
+}
+
+#contenedor-boletas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
 }
