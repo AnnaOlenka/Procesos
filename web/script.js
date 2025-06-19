@@ -220,9 +220,10 @@ function crearBoleta(venta) {
   <header>
       <div class="head-boleta">
         <div id="id-venta-boleta">Venta #${venta.id_venta}</div>
-        <div id="name-venta-boleta">Cliente: ${venta.cliente || "S/N"}</div>
+        <div id="name-venta-boleta">Cliente: ${venta.cliente || "S/N"}</div> 
       </div>
       <div>
+        <br>
         <label>Fecha:</label> ${venta.fecha}
       </div>
     </header>
