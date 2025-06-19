@@ -644,6 +644,8 @@ function escapeHtml(text) {
 
 // Usa esta función en lugar de la anterior:
 document.addEventListener('DOMContentLoaded', cargarIndicadoresTranspuestos);
+
+//HALLA EL INDICADOR Y LOS PORCENTAJES RESPECTIVOS
 fetch('backend/obtener_ingresos_meta.php')
   .then(response => response.json())
   .then(data => {
