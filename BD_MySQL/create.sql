@@ -51,6 +51,6 @@ CREATE TABLE IF NOT EXISTS Meta (
     periodo VARCHAR(50), -- Por ejemplo: 'Mensual', 'Trimestral', etc.
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
-    tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('ingreso', 'ventas')),
+    tipo VARCHAR(20) NOT NULL,
     cantidad DECIMAL(10,2) NOT NULL
 );

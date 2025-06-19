@@ -130,6 +130,8 @@ tabVisualizarVenta.addEventListener("click", () => {
   seccionVenta.style.display = "none";
   seccionBoletas.style.display = "block";
   ventaTabActivo = "boletas";
+
+  mostrarBoletas();
 });
 
 function agregarProductoAVenta(producto) {
@@ -199,6 +201,71 @@ document.getElementById("formulario-venta").addEventListener("submit", function 
 });
 
 
+function crearBoleta(venta) {
+  const boleta = document.createElement("div");
+  boleta.classList.add("venta-boleta");
+
+  const filasHTML = venta.productos.map(producto => `
+    <tr>
+      <td>${producto.nombre_producto}</td>
+      <td>${producto.cantidad}</td>
+      <td>S/. ${parseFloat(producto.precio_unitario).toFixed(2)}</td>
+      <td>S/. ${(producto.cantidad * producto.precio_unitario).toFixed(2)}</td>
+    </tr>
+  `).join("");
+
+  boleta.innerHTML = `
+  <div class="venta-boleta">  
+  <header>
+      <div class="head-boleta">
+        <div id="id-venta-boleta">Venta #${venta.id_venta}</div>
+        <div id="name-venta-boleta">Cliente: ${venta.cliente || "S/N"}</div>
+      </div>
+      <div>
+        <label>Fecha:</label> ${venta.fecha}
+      </div>
+    </header>
+    <hr>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Uni</th>
+            <th>Precio Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filasHTML}
+        </tbody>
+      </table>
+    </div>
+    <hr>
+    <div>
+      <label>Monto de Compra:</label>
+      <label><strong>S/. ${parseFloat(venta.total_venta).toFixed(2)}</strong></label>
+    </div>
+   </div> 
+  `;
+
+  return boleta;
+}
+
+function mostrarBoletas() {
+  const contenedor = document.getElementById("contenedor-boletas");
+  contenedor.innerHTML = ""; // Limpia boletas previas
+
+  fetch("backend/obtener_multiples_boletas.php")
+    .then(res => res.json())
+    .then(ventas => {
+      ventas.forEach(venta => {
+        const boletaDOM = crearBoleta(venta);
+        contenedor.appendChild(boletaDOM);
+      });
+    });
+}
+
 
 // ----------- METAS: Cambio de pestañas -----------
 const tabMetas = document.getElementById("tab-meta");
@@ -221,6 +288,8 @@ tabEstadoMeta.addEventListener("click", () => {
   seccionMeta.style.display = "none";
   seccionEstadoMeta.style.display = "block";
   metaTabActivo = "estadoMetas";
+
+  cargarEstadoMetas();
 });
 
 // ----------- CAMBIO DE SECCIONES DESDE MENÚ -----------
@@ -306,26 +375,103 @@ formMeta.addEventListener("submit", function (event) {
   const periodo = document.getElementById("periodo").value;
   let fechaDia = "", fechaInicio = "", fechaFin = "";
 
+  // Declaramos todas las variables necesarias
+  let tipo = "";
+  let fecha = "";
+  let fecha_inicio = "";
+  let fecha_fin = "";
+
+  const datos = new FormData();
+  datos.append("cantidad", ingresos);
+  datos.append("periodo", periodo);
+
   if (periodo === "dias") {
-    fechaDia = document.getElementById("fecha-dia").value;
+    tipo="diaria";
+    fecha = document.getElementById("fecha-dia").value;
+    datos.append("tipo", tipo);
+    datos.append("fecha", fecha);
+
   } else if (periodo === "semanal") {
-    fechaInicio = document.getElementById("fecha-inicio").value;
-    fechaFin = document.getElementById("fecha-fin").value;
+    tipo="semanal";
+    fecha_inicio = document.getElementById("fecha-inicio").value;
+    fecha_fin = document.getElementById("fecha-fin").value;
+    datos.append("tipo", tipo);
+    datos.append("fecha_inicio", fecha_inicio);
+    datos.append("fecha_fin", fecha_fin);
   }
 
-  console.log("Meta registrada:");
-  console.log("Ingresos:", ingresos);
-  console.log("Periodo:", periodo);
-  if (fechaDia) console.log("Fecha:", fechaDia);
-  if (fechaInicio && fechaFin) {
-    console.log("Fecha Inicio:", fechaInicio);
-    console.log("Fecha Fin:", fechaFin);
-  }
-
-  formMeta.reset();
-  campoFechaDia.style.display = "none";
-  campoFechasSemanal.style.display = "none";
+   fetch("backend/agregar_meta.php", {
+    method: "POST",
+    body: datos
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
+        alert("Meta registrada correctamente");
+        formMeta.reset();
+        campoFechaDia.style.display = "none";
+        campoFechasSemanal.style.display = "none";
+      } else {
+        alert("Error: " + res.mensaje);
+      }
+    });
 });
+  // console.log("Meta registrada:");
+  // console.log("Ingresos:", ingresos);
+  // console.log("Periodo:", periodo);
+  // if (fechaDia) console.log("Fecha:", fechaDia);
+  // if (fechaInicio && fechaFin) {
+  //   console.log("Fecha Inicio:", fechaInicio);
+  //   console.log("Fecha Fin:", fechaFin);
+  // }
+
+  // formMeta.reset();
+  // campoFechaDia.style.display = "none";
+  // campoFechasSemanal.style.display = "none";
+
+function cargarEstadoMetas() {
+  fetch("backend/obtener_metas.php")
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        const tablaDiarias = document.getElementById("tabla-metas-diarias");
+        const tablaSemanales = document.getElementById("tabla-metas-semanales");
+
+        // Limpiar
+        tablaDiarias.innerHTML = "";
+        tablaSemanales.innerHTML = "";
+
+        // Metas Diarias
+        data.diarias.forEach(meta => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `
+            <td>${meta.descripcion}</td>
+            <td>${meta.fecha}</td>
+            <td>S/. ${parseFloat(meta.meta).toFixed(2)}</td>
+            <td>S/. ${parseFloat(meta.ingresos_actuales).toFixed(2)}</td>
+            <td>${meta.estado}</td>
+          `;
+          tablaDiarias.appendChild(fila);
+        });
+
+        // Metas Semanales
+        data.semanales.forEach(meta => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `
+            <td>${meta.descripcion}</td>
+            <td>${meta.fecha_inicio}</td>
+            <td>${meta.fecha_fin}</td>
+            <td>S/. ${parseFloat(meta.meta).toFixed(2)}</td>
+            <td>S/. ${parseFloat(meta.ingresos_actuales).toFixed(2)}</td>
+            <td>${meta.estado}</td>
+          `;
+          tablaSemanales.appendChild(fila);
+        });
+      } else {
+        console.error("Error cargando metas:", data.mensaje);
+      }
+    });
+}
 
 
 window.addEventListener("DOMContentLoaded", cargarProductos);

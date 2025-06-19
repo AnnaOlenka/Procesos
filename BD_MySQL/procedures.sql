@@ -88,3 +88,87 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE ObtenerDetalleVenta (IN p_id_venta INT)
+BEGIN
+    SELECT 
+        v.fecha,
+        p.nombre AS nombre_producto,
+        dv.cantidad,
+        dv.precio_unitario,
+        (dv.cantidad * dv.precio_unitario) AS subtotal,
+        v.total AS total_venta
+    FROM Venta v
+    JOIN DetalleVenta dv ON v.id_venta = dv.id_venta
+    JOIN Producto p ON dv.id_producto = p.id_producto
+    WHERE v.id_venta = p_id_venta;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE ObtenerTodasLasBoletas()
+BEGIN
+    SELECT 
+        v.id_venta,
+        v.fecha,
+        v.total AS total_venta,
+        p.nombre AS nombre_producto,
+        dv.cantidad,
+        dv.precio_unitario,
+        (dv.cantidad * dv.precio_unitario) AS subtotal
+    FROM Venta v
+    JOIN DetalleVenta dv ON v.id_venta = dv.id_venta
+    JOIN Producto p ON dv.id_producto = p.id_producto
+    ORDER BY v.id_venta, p.nombre;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE ObtenerMetasConIngresos()
+BEGIN
+    -- Metas Diarias
+    SELECT 
+        id_meta,
+        descripcion,
+        fecha_inicio AS fecha,
+        cantidad AS meta,
+        (SELECT IFNULL(SUM(total), 0) 
+         FROM Venta 
+         WHERE DATE(fecha) = m.fecha_inicio) AS ingresos_actuales,
+        CASE 
+            WHEN (SELECT IFNULL(SUM(total), 0) FROM Venta WHERE DATE(fecha) = m.fecha_inicio) >= m.cantidad THEN 'Cumplida'
+            ELSE 'Pendiente'
+        END AS estado,
+        'diaria' AS tipo
+    FROM Meta m
+    WHERE tipo = 'diaria';
+
+    -- Metas Semanales
+    SELECT 
+        id_meta,
+        descripcion,
+        fecha_inicio,
+        fecha_fin,
+        cantidad AS meta,
+        (SELECT IFNULL(SUM(total), 0)
+         FROM Venta
+         WHERE DATE(fecha) BETWEEN m.fecha_inicio AND m.fecha_fin) AS ingresos_actuales,
+        CASE 
+            WHEN (SELECT IFNULL(SUM(total), 0) FROM Venta WHERE DATE(fecha) BETWEEN m.fecha_inicio AND m.fecha_fin) >= m.cantidad THEN 'Cumplida'
+            ELSE 'Pendiente'
+        END AS estado,
+        'semanal' AS tipo
+    FROM Meta m
+    WHERE tipo = 'semanal';
+END $$
+
+DELIMITER ;
