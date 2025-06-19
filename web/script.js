@@ -4,6 +4,7 @@ const tabRegistro = document.getElementById("tab-registro");
 const seccionInventario = document.getElementById("seccion-inventario");
 const seccionRegistro = document.getElementById("seccion-registro");
 let productoTabActivo = "inventario";
+document.body.style.backgroundColor = "white";
 
 tabInventario.addEventListener("click", () => {
   tabInventario.classList.add("activo");
@@ -272,6 +273,7 @@ const tabMetas = document.getElementById("tab-meta");
 const tabEstadoMeta = document.getElementById("tab-estado-meta");
 const seccionMeta = document.getElementById("seccion-meta");
 const seccionEstadoMeta = document.getElementById("seccion-estado-meta");
+
 let metaTabActivo = "metas";
 
 tabMetas.addEventListener("click", () => {
@@ -297,6 +299,7 @@ const menuItems = document.querySelectorAll(".sidebar nav ul li");
 const tabsHeader = document.getElementById("tabs-productos");
 const seccionVentas = document.getElementById("seccion-ventas");
 const seccionMetas = document.getElementById("seccion-metas");
+const seccionGraficas = document.getElementById("seccion-graficos");
 
 menuItems.forEach((item, index) => {
   item.addEventListener("click", () => {
@@ -308,6 +311,7 @@ menuItems.forEach((item, index) => {
     seccionMetas.style.display = "none";
     seccionMeta.style.display = "none";
     seccionEstadoMeta.style.display = "none";
+    seccionGraficas.style.display = "none";
 
     if (index === 0) { // Productos
       tabsHeader.style.display = "flex";
@@ -347,6 +351,11 @@ menuItems.forEach((item, index) => {
         tabMetas.classList.remove("activo");
         seccionEstadoMeta.style.display = "block";
       }
+    } else if (index===3){  //Graficas
+      console.log("Entró a gráficas"); 
+      seccionGraficas.style.display = "block";
+      mostrarGraficas();
+
     }
   });
 });
@@ -416,18 +425,7 @@ formMeta.addEventListener("submit", function (event) {
       }
     });
 });
-  // console.log("Meta registrada:");
-  // console.log("Ingresos:", ingresos);
-  // console.log("Periodo:", periodo);
-  // if (fechaDia) console.log("Fecha:", fechaDia);
-  // if (fechaInicio && fechaFin) {
-  //   console.log("Fecha Inicio:", fechaInicio);
-  //   console.log("Fecha Fin:", fechaFin);
-  // }
 
-  // formMeta.reset();
-  // campoFechaDia.style.display = "none";
-  // campoFechasSemanal.style.display = "none";
 
 function cargarEstadoMetas() {
   fetch("backend/obtener_metas.php")
@@ -472,6 +470,90 @@ function cargarEstadoMetas() {
       }
     });
 }
+
+
+//GRAFICAS
+//GRAFICAS
+
+let chartDia    = null;
+let chartSemana = null;
+
+function mostrarGraficas() {
+  Promise.all([
+    fetch("backend/obtener_ingresos_por_dia.php").then(r => r.json()),
+    fetch("backend/obtener_ingresos_por_semana.php").then(r => r.json())
+  ]).then(([datosDia, datosSemana]) => {
+    renderGraficoDia(datosDia);
+    renderGraficoSemana(datosSemana);
+  });
+}
+
+function renderGraficoDia(datos) {
+  // const ctx = document.getElementById("grafico-dia").getContext("2d");
+  const labels  = datos.map(d => d.fecha);
+  const ingresos= datos.map(d => d.ingresos);
+  const metas   = datos.map(d => d.meta);
+  
+  const canvas = document.getElementById("grafico-diario");
+  if (!canvas) {
+    console.warn("No se encontró el canvas #grafico-diario");
+    return;
+  }
+  const ctx = canvas.getContext("2d");          // ← ahora sí, después de validar
+
+  if (chartDia) chartDia.destroy();
+
+  chartDia = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Ingresos', data: ingresos, backgroundColor: 'rgba(54, 232, 235, 0.7)' },
+        { label: 'Meta',     data: metas,    backgroundColor: 'rgba(255,99,132,0.7)' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { title: { display: true, text: 'Ingresos vs Meta por Día' } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
+function renderGraficoSemana(datos) {
+  const canvas = document.getElementById("grafico-semanal");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+
+  if (!datos || datos.length === 0) {
+    console.warn("No hay datos semanales disponibles aún.");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
+  const labels = datos.map(d => `Sem ${String(d.semana).slice(-2)}`);
+  const ingresos = datos.map(d => d.ingresos);
+  const metas = datos.map(d => d.meta);
+
+  if (chartSemana) chartSemana.destroy();
+
+  chartSemana = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Ingresos', data: ingresos, backgroundColor: 'rgba(129, 73, 249, 0.9)' },
+        { label: 'Meta',     data: metas,    backgroundColor: 'rgba(34, 207, 135, 0.7)' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { title: { display: true, text: 'Ingresos vs Meta por Semana' } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+}
+
 
 
 window.addEventListener("DOMContentLoaded", cargarProductos);

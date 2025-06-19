@@ -16,6 +16,7 @@
           <li><img src="icons/productos.png" alt="Productos" class="icono">Productos</li>
           <li><img src="icons/ventas.png" alt="Ventas" class="icono"> Ventas</li>
           <li><img src="icons/metas.png" alt="Metas" class="icono"> Metas</li>
+          <li><img src="icons/graficos.png" alt="Gráficas" class="icono">Gráficas</li>
         </ul>
       </nav>
     </aside>
@@ -67,7 +68,7 @@
         </header>
 
         <section class="ventas"  id="seccion-venta" style="display: none">
-          <section class="productos" id="seccion-inventario">
+          <section class="productos" id="seccion-productos-venta">
             <h2>Automoviles</h2>
             <table>
               <thead>
@@ -112,8 +113,8 @@
               </form>
 
           </section>
-
         </section>
+
         <section class="ventas" id="seccion-boletas" style="display: none">
           <div id="contenedor-boletas">
           <!-- <div class="venta-boleta">
@@ -151,6 +152,15 @@
           
         </section>
 
+      </section>
+
+      <!-- Sección GRAFICAS -->
+      <section class="graficas" id="seccion-graficos" style="display: none; height: 500px; background-color: white;">       
+          <h3>Ingresos vs Meta - Diario</h3>
+          <canvas id="grafico-diario" width="400" height="200"></canvas>
+          <br><br>
+          <h3>Ingresos vs Meta - Semanal</h3>
+          <canvas id="grafico-semanal" width="400" height="200"></canvas>    
       </section>
 
       <!-- Sección METAS -->
@@ -227,13 +237,18 @@
 
               </tbody>
           </section>
+
+          
         </section>
 
       </section>
+      
+      
     </main>
   </div>
-
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 
 </html>
