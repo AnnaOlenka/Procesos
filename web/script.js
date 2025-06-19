@@ -644,8 +644,66 @@ function escapeHtml(text) {
 
 // Usa esta función en lugar de la anterior:
 document.addEventListener('DOMContentLoaded', cargarIndicadoresTranspuestos);
+fetch('backend/obtener_ingresos_meta.php')
+  .then(response => response.json())
+  .then(data => {
+    const fechas = data.map(item => item.fecha);
+    const ingresos = data.map(item => item.ingresos);
+    const metas = data.map(item => item.meta);
 
+    const porcentajes = data.map(item => {
+      return item.meta > 0 ? ((item.ingresos / item.meta) * 100).toFixed(2) : 0;
+    });
 
+    // Generar colores por barra: verde si cumple, rojo si no
+    const colores = porcentajes.map(p => p >= 100 ? '#4CAF50' : '#F44336');
+
+    const ctx = document.getElementById('graficoIndicador').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: fechas,
+        datasets: [
+          {
+            label: '% Cumplimiento',
+            data: porcentajes,
+            backgroundColor: colores
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 120,
+            title: {
+              display: true,
+              text: '% Cumplimiento'
+            }
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Cumplimiento Diario del Indicador'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const index = context.dataIndex;
+                return `Fecha: ${fechas[index]}\nIngreso: S/ ${ingresos[index]}\nMeta: S/ ${metas[index]}\nCumplimiento: ${porcentajes[index]}%`;
+              }
+            }
+          },
+          legend: {
+            display: false // Oculta la leyenda si solo hay una barra
+          }
+        }
+      }
+    });
+  })
+  .catch(error => console.error('Error al cargar los datos:', error));
 
 window.addEventListener("DOMContentLoaded", cargarProductos);
 window.addEventListener("DOMContentLoaded", cargarProductos_);
