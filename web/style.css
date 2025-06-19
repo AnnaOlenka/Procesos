@@ -242,7 +242,3 @@ hr{
   overflow-x: auto;
 }
 
-table#tabla-indicadores th,
-  table#tabla-indicadores td {
-    border: 1px solid #000;  /* negro, puedes cambiarlo */
-  }
