@@ -196,3 +196,12 @@ hr{
   text-align: center;
   vertical-align: middle;
 }
+
+.estado-cumplido{
+  color: #098C6E;
+  font-weight: bold;
+}
+.estado-pendiente{
+  color: #db5b61;
+  font-weight: bold;
+}

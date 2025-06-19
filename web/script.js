@@ -430,6 +430,7 @@ formMeta.addEventListener("submit", function (event) {
   // campoFechasSemanal.style.display = "none";
 
 function cargarEstadoMetas() {
+  
   fetch("backend/obtener_metas.php")
     .then(res => res.json())
     .then(data => {
@@ -443,19 +444,21 @@ function cargarEstadoMetas() {
 
         // Metas Diarias
         data.diarias.forEach(meta => {
+          const class_estado = meta.estado == "Cumplida" ? "estado-cumplido" : "estado-pendiente";
           const fila = document.createElement("tr");
           fila.innerHTML = `
             <td>${meta.descripcion}</td>
             <td>${meta.fecha}</td>
             <td>S/. ${parseFloat(meta.meta).toFixed(2)}</td>
             <td>S/. ${parseFloat(meta.ingresos_actuales).toFixed(2)}</td>
-            <td>${meta.estado}</td>
+            <td class="${class_estado}">${meta.estado}</td>
           `;
           tablaDiarias.appendChild(fila);
         });
 
         // Metas Semanales
         data.semanales.forEach(meta => {
+          const class_estado = meta.estado == "Cumplida" ? "estado-cumplido" : "estado-pendiente";
           const fila = document.createElement("tr");
           fila.innerHTML = `
             <td>${meta.descripcion}</td>
@@ -463,7 +466,7 @@ function cargarEstadoMetas() {
             <td>${meta.fecha_fin}</td>
             <td>S/. ${parseFloat(meta.meta).toFixed(2)}</td>
             <td>S/. ${parseFloat(meta.ingresos_actuales).toFixed(2)}</td>
-            <td>${meta.estado}</td>
+            <td class="${class_estado}">${meta.estado}</td>
           `;
           tablaSemanales.appendChild(fila);
         });

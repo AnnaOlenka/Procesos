@@ -89,6 +89,14 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE ObtenerProductos()
+BEGIN 
+    SELECT * FROM Producto;
+
+END $$;
+DELIMITER
+        
 
 
 DELIMITER $$
