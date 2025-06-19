@@ -301,9 +301,13 @@ const tabsHeader = document.getElementById("tabs-productos");
 const seccionVentas = document.getElementById("seccion-ventas");
 const seccionMetas = document.getElementById("seccion-metas");
 const seccionGraficas = document.getElementById("seccion-graficos");
+const seccionIndicador = document.getElementById("seccion-indicadores");
 
 menuItems.forEach((item, index) => {
-  item.addEventListener("click", () => {
+  item.addEventListener("click", (e) => {
+    e.preventDefault(); // ← por si acaso
+    console.log("Se hizo clic en el índice:", index);
+
     // Oculta todas las secciones
     tabsHeader.style.display = "none";
     seccionInventario.style.display = "none";
@@ -313,10 +317,11 @@ menuItems.forEach((item, index) => {
     seccionMeta.style.display = "none";
     seccionEstadoMeta.style.display = "none";
     seccionGraficas.style.display = "none";
+    seccionIndicador.style.display = "none";
 
+    // Manejo según el índice
     if (index === 0) { // Productos
       tabsHeader.style.display = "flex";
-
       if (productoTabActivo === "inventario") {
         tabInventario.classList.add("activo");
         tabRegistro.classList.remove("activo");
@@ -329,7 +334,6 @@ menuItems.forEach((item, index) => {
 
     } else if (index === 1) { // Ventas
       seccionVentas.style.display = "block";
-
       if (ventaTabActivo === "ventas") {
         tabVentas.classList.add("activo");
         tabVisualizarVenta.classList.remove("activo");
@@ -342,7 +346,6 @@ menuItems.forEach((item, index) => {
 
     } else if (index === 2) { // Metas
       seccionMetas.style.display = "block";
-
       if (metaTabActivo === "metas") {
         tabMetas.classList.add("activo");
         tabEstadoMeta.classList.remove("activo");
@@ -352,14 +355,21 @@ menuItems.forEach((item, index) => {
         tabMetas.classList.remove("activo");
         seccionEstadoMeta.style.display = "block";
       }
-    } else if (index===3){  //Graficas
+
+    } else if (index === 3) { // Gráficas
       console.log("Entró a gráficas"); 
       seccionGraficas.style.display = "block";
       mostrarGraficas();
 
+    } else if (index === 4) {  // Indicador
+      console.log("Se está mostrando el indicador");
+      seccionIndicador.style.display = "block";{
+      cargarIndicadores();
+      }
     }
   });
 });
+
 
 // ----------- FORMULARIO DE METAS Y FECHAS -----------
 const formMeta = document.getElementById("formulario-meta");
@@ -557,6 +567,83 @@ function renderGraficoSemana(datos) {
     }
   });
 }
+
+function cargarIndicadoresTranspuestos() {
+  console.log('cargando indicadores transpuestos...');
+  fetch('backend/obtener_indicadores.php')
+    .then(response => {
+      if (!response.ok) throw new Error('Error al obtener datos');
+      return response.json();
+    })
+    .then(data => {
+      console.log('datos recibidos:', data);
+
+      // Obtenemos el cuerpo y el encabezado de la tabla
+      const tabla = document.getElementById('tabla-indicadores');
+      tabla.innerHTML = '';  // Limpiamos tabla
+
+      // Si no hay datos, mostramos mensaje
+      if (data.length === 0) {
+        tabla.innerHTML = '<tr><td>No hay indicadores para mostrar</td></tr>';
+        return;
+      }
+
+      // Extraemos las claves (nombres de columnas)
+      const keys = Object.keys(data[0]);
+
+      // Crear fila para encabezados con IDs o indicadores (puede dejarse vacía o con etiqueta)
+      let theadHTML = '<thead><tr><th>Campo</th>';
+      for (let i = 0; i < data.length; i++) {
+        theadHTML += `<th>Indicador ${i+1}</th>`;
+      }
+      theadHTML += '</tr></thead>';
+
+      // Construimos el cuerpo transpuesto
+      let tbodyHTML = '<tbody>';
+      keys.forEach(key => {
+        tbodyHTML += `<tr><th>${formatearTitulo(key)}</th>`;  // Nombre del campo
+        data.forEach(indicador => {
+          tbodyHTML += `<td>${escapeHtml(indicador[key])}</td>`;
+        });
+        tbodyHTML += '</tr>';
+      });
+      tbodyHTML += '</tbody>';
+
+      tabla.innerHTML = theadHTML + tbodyHTML;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('No se pudieron cargar los indicadores');
+    });
+}
+
+// Función para poner títulos más amigables
+function formatearTitulo(key) {
+  switch(key) {
+    case 'id_indicador': return 'ID';
+    case 'codigo_indicador': return 'Código';
+    case 'nombre_indicador': return 'Nombre';
+    case 'responsable': return 'Responsable';
+    case 'resultado_esperado': return 'Resultado Esperado';
+    case 'descripcion': return 'Descripción';
+    case 'fuentes_informacion': return 'Fuentes de Información';
+    case 'seguimiento': return 'Seguimiento';
+    default: return key;
+  }
+}
+
+// Función para evitar inyección HTML en los datos
+function escapeHtml(text) {
+  if (typeof text !== 'string') return text;
+  return text.replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+}
+
+// Usa esta función en lugar de la anterior:
+document.addEventListener('DOMContentLoaded', cargarIndicadoresTranspuestos);
 
 
 
